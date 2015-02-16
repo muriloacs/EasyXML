@@ -8,6 +8,8 @@ use InvalidArgumentException;
 
 class EasyXMLService
 {
+	private $errorMessage = '[EasyXMLService] Error Processing Request: ';
+
 	/**
 	 * Converts an array to XML.
 	 * @param  string $rootNode The root node of the XML.
@@ -19,11 +21,11 @@ class EasyXMLService
 	{
 		// First argument
 		if (!is_string($rootNode) || empty($rootNode)) {
-			throw new InvalidArgumentException('Error Processing Request: Invalid first argument($rootNode).');
+			throw new InvalidArgumentException($this->errorMessage . 'Invalid first argument($rootNode).');
 		}
 		// Second argument
 		if (!is_array($body) || !count($body)) {
-			throw new InvalidArgumentException('Error Processing Request: Invalid second argument($body).');
+			throw new InvalidArgumentException($this->errorMessage . 'Invalid second argument($body).');
 		}
 		// Third argument
 		$version  = isset($header['version']) && !empty($header['version']) ? $header['version'] : '1.0';
@@ -41,9 +43,11 @@ class EasyXMLService
 	 */
 	public function xml2array($xml)
 	{
-		$dom = new DomDocument();
 		$xml = is_file($xml) ? file_get_contents($xml) : $xml;
-		$dom->loadXML($xml);
+		$dom = new DomDocument();
+		if (!$dom->loadXML($xml)) {
+			throw new InvalidArgumentException($this->errorMessage . 'Invalid XML document given.');
+		}
 		return XML2Array::createArray($dom);
 	}
 }
