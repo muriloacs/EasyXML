@@ -1,0 +1,23 @@
+{
+	"name": "muriloamaral/easyxml",
+	"description": "Zend Framework 2 module for dealing with XML. Creates XML from an array and vice versa.",
+	"type": "library",
+	"keywords": ["zf2", "zendframework", "module", "xml", "array"],
+	"homepage": "https://github.com/muriloacs/EasyXML",
+	"authors": [
+		{
+			"name": "Murilo Amaral",
+			"email": "muriloacs@yahoo.com.br",
+			"homepage": "http://muriloamaral.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3.3",
+		"zendframework/zendframework": "2.*"
+	},
+	"autoload": {
+		"classmap": [
+			"./Module.php"
+		]
+	}
+}
