@@ -27,11 +27,11 @@ class EasyXMLPlugin extends AbstractPlugin
 
     /**
      * EasyXMLService injected as a dependency.
-     * @param EasyXMLService $_easyXMLService
+     * @param EasyXMLService $easyXMLService
      */
-    public function __construct(EasyXMLService $_easyXMLService)
+    public function __construct(EasyXMLService $easyXMLService)
     {
-        $this->_easyXMLService = $_easyXMLService;
+        $this->_easyXMLService = $easyXMLService;
     }
 
     /**
