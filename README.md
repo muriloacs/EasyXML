@@ -8,14 +8,6 @@ This module provides both a Service and a ControllerPlugin with which you can us
 Installation
 ------------
 
-### Main Setup
-
-#### By cloning project
-
-1. Install the [EasyXML](https://github.com/muriloacs/EasyXML) ZF2 module
-   by cloning it into `./vendor/`.
-2. Clone this project into your `./vendor/` directory.
-
 #### With composer
 
 1. Add this project in your composer.json:
@@ -51,67 +43,24 @@ Usage
 -----
 You can either create an instance of `EasyXML`through the ServiceManager or use it within your controller by using the EasyXML ControllerPlugin. 
 
-### ServiceManager Example
 
---- ARRAY TO XML ---
-
-    $xmlService = $this->getServiceLocator()->get('EasyXML');
-
-    $rootNode = 'products';
-
-    $body = array(
-        '@attributes' => array(
-            'type' => 'fiction'
-        ),
-        'book' => array(
-            array(
-                '@attributes' => array(
-                    'author' => 'George Orwell'
-                ),
-                'title' => '1984'
-            ),
-            array(
-                '@attributes' => array(
-                    'author' => 'Isaac Asimov'
-                ),
-                'title' => array('@cdata'=>'Foundation'),
-                'price' => '$15.61'
-            ),
-            array(
-                '@attributes' => array(
-                    'author' => 'Robert A Heinlein'
-                ),
-                'title' =>  array('@cdata'=>'Stranger in a Strange Land'),
-                'price' => array(
-                    '@attributes' => array(
-                        'discount' => '10%'
-                    ),
-                    '@value' => '$18.00'
-                )
-            )
-        )
-    );
-
-    $content = $xmlService->array2xml($rootNode, $body);
-
+#### ControllerPlugin
 
 --- XML TO ARRAY ---
 
-    $xmlService = $this->getServiceLocator()->get('EasyXML');
+    public function xml2arrayAction()
+    {
+        // IT COULD BE EITHER A XML PATH FILE OR A STRING CONTAINING THE XML CONTENT.
+        $xml = ROOT_PATH . '/data/my-xml-file.xml';
 
-    $xmlFile = ROOT_PATH . '/data/my-xml-file.xml'; // IT COULD BE EITHER A XML PATH FILE OR A STRING CONTAINING THE XML CONTENT.
-
-    $content = $xmlService->xml2array($xmlFile);
-
-
-
-### ControllerPlugin Example
+        $array = $this->easyXML()->xml2array($xml); 
+    }
 
 --- ARRAY TO XML ---
     
     public function array2xmlAction()
     {
-        $rootNode = 'products';
+        $rootNode = 'books';
 
         $body = array(
             '@attributes' => array(
@@ -146,21 +95,60 @@ You can either create an instance of `EasyXML`through the ServiceManager or use 
             )
         );
 
-        $content = $this->easyXML()->array2xml($rootNode, $body);
-
-        // Response
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'text/xml; charset=utf-8');
-        $response->setContent($content);
-        return $response;
+        $xml = $this->easyXML()->array2xml($rootNode, $body);
     }
 
+
+#### ServiceManager
 
 --- XML TO ARRAY ---
 
-    public function xml2arrayAction()
-    {
-        $xmlFile = ROOT_PATH . '/data/my-xml-file.xml';
+    $xmlService = $this->getServiceLocator()->get('EasyXML');
 
-        $content = $this->easyXML()->xml2array($xmlFile); // IT COULD BE EITHER A XML PATH FILE OR A STRING CONTAINING THE XML CONTENT.
-    }
+    // IT COULD BE EITHER A XML PATH FILE OR A STRING CONTAINING THE XML CONTENT.
+    $xml = ROOT_PATH . '/data/my-xml-file.xml'; 
+
+    $array = $xmlService->xml2array($xml);
+
+
+--- ARRAY TO XML ---
+
+    $xmlService = $this->getServiceLocator()->get('EasyXML');
+
+    $rootNode = 'books';
+
+    $body = array(
+        '@attributes' => array(
+            'type' => 'fiction'
+        ),
+        'book' => array(
+            array(
+                '@attributes' => array(
+                    'author' => 'George Orwell'
+                ),
+                'title' => '1984'
+            ),
+            array(
+                '@attributes' => array(
+                    'author' => 'Isaac Asimov'
+                ),
+                'title' => array('@cdata'=>'Foundation'),
+                'price' => '$15.61'
+            ),
+            array(
+                '@attributes' => array(
+                    'author' => 'Robert A Heinlein'
+                ),
+                'title' =>  array('@cdata'=>'Stranger in a Strange Land'),
+                'price' => array(
+                    '@attributes' => array(
+                        'discount' => '10%'
+                    ),
+                    '@value' => '$18.00'
+                )
+            )
+        )
+    );
+
+    $xml = $xmlService->array2xml($rootNode, $body);
+
