@@ -33,10 +33,11 @@ namespace EasyXML\Library;
  *       echo $xml->saveXML();
  */
  
-class Array2XML {
+class Array2XML
+{
  
     private static $xml = null;
-	private static $encoding = 'UTF-8';
+    private static $encoding = 'UTF-8';
  
     /**
      * Initialize the root XML node [optional]
@@ -44,10 +45,11 @@ class Array2XML {
      * @param $encoding
      * @param $format_output
      */
-    public static function init($version = '1.0', $encoding = 'UTF-8', $format_output = true) {
+    public static function init($version = '1.0', $encoding = 'UTF-8', $format_output = true) 
+    {
         self::$xml = new \DomDocument($version, $encoding);
         self::$xml->formatOutput = $format_output;
-		self::$encoding = $encoding;
+        self::$encoding = $encoding;
     }
  
     /**
@@ -56,7 +58,8 @@ class Array2XML {
      * @param array $arr - aray to be converterd
      * @return DomDocument
      */
-    public static function &createXML($node_name, $arr=array()) {
+    public static function &createXML($node_name, $arr=array()) 
+    {
         $xml = self::getXMLRoot();
         $xml->appendChild(self::convert($node_name, $arr));
  
@@ -70,7 +73,8 @@ class Array2XML {
      * @param array $arr - aray to be converterd
      * @return DOMNode
      */
-    private static function &convert($node_name, $arr=array()) {
+    private static function &convert($node_name, $arr=array()) 
+    {
  
         //print_arr($node_name);
         $xml = self::getXMLRoot();
@@ -137,7 +141,8 @@ class Array2XML {
     /*
      * Get the root XML node, if there isn't one, create it.
      */
-    private static function getXMLRoot(){
+    private static function getXMLRoot()
+    {
         if(empty(self::$xml)) {
             self::init();
         }
@@ -147,7 +152,8 @@ class Array2XML {
     /*
      * Get string representation of boolean value
      */
-    private static function bool2str($v){
+    private static function bool2str($v)
+    {
         //convert boolean to text value.
         $v = $v === true ? 'true' : $v;
         $v = $v === false ? 'false' : $v;
@@ -158,7 +164,8 @@ class Array2XML {
      * Check if the tag name or attribute name contains illegal characters
      * Ref: http://www.w3.org/TR/xml/#sec-common-syn
      */
-    private static function isValidTagName($tag){
+    private static function isValidTagName($tag)
+    {
         $pattern = '/^[a-z_]+[a-z0-9\:\-\.\_]*[^:]*$/i';
         return preg_match($pattern, $tag, $matches) && $matches[0] == $tag;
     }
