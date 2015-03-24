@@ -46,6 +46,7 @@ class EasyXMLService
 
         Array2XML::init($version, $encoding);
         $xml = Array2XML::createXML($rootNode, $body);
+
         return $xml->saveXML();
     }
 
@@ -57,11 +58,17 @@ class EasyXMLService
      */
     public function xml2array($xml)
     {
+        $xml = trim($xml);
+        if (!$xml) {
+            throw new EasyXMLException('Invalid XML document given.');
+        }
+
         $xml = is_file($xml) ? file_get_contents($xml) : $xml;
         $dom = new DomDocument();
         if (!$dom->loadXML($xml)) {
             throw new EasyXMLException('Invalid XML document given.');
         }
+
         return XML2Array::createArray($dom);
     }
 }
