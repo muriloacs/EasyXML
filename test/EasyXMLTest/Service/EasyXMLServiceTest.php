@@ -10,67 +10,82 @@
 
 namespace EasyXMLTest\Service;
 
-use PHPUnit_Framework_TestCase;
-use DomDocument;
 use EasyXML\Service\EasyXMLService;
-use EasyXML\Exception\EasyXMLException;
 
 /**
- * EasyXML's service test class.
+ * EasyXMLService's test class.
  *
  * @since Class available since Release 1.0
  */
-class EasyXMLServiceTest extends PHPUnit_Framework_TestCase
+class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var EasyXMLService
+     */
+    private $_service;
+
     /**
      * @var string
      */
-    private $_rootNode = 'products';
+    private $_rootNode;
 
     /**
      * @var array
      */
-    private $_body = array(
-        '@attributes' => array(
-            'type' => 'fiction'
-        ),
-        'book' => array(
-            array(
-                '@attributes' => array(
-                    'author' => 'George Orwell'
-                ),
-                'title' => '1984'
+    private $_body;
+
+    /**
+     * Setup method.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->_service = new EasyXMLService();
+
+        $this->_rootNode = 'products';
+        
+        $this->_body = array(
+            '@attributes' => array(
+                'type' => 'fiction'
             ),
-            array(
-                '@attributes' => array(
-                    'author' => 'Isaac Asimov'
-                ),
-                'title' => array('@cdata' => 'Foundation'),
-                'price' => '$15.61'
-            ),
-            array(
-                '@attributes' => array(
-                    'author' => 'Robert A Heinlein'
-                ),
-                'title' => array('@cdata' => 'Stranger in a Strange Land'),
-                'price' => array(
+            'book' => array(
+                array(
                     '@attributes' => array(
-                        'discount' => '10%'
+                        'author' => 'George Orwell'
                     ),
-                    '@value' => '$18.00'
+                    'title' => '1984'
+                ),
+                array(
+                    '@attributes' => array(
+                        'author' => 'Isaac Asimov'
+                    ),
+                    'title' => array('@cdata' => 'Foundation'),
+                    'price' => '$15.61'
+                ),
+                array(
+                    '@attributes' => array(
+                        'author' => 'Robert A Heinlein'
+                    ),
+                    'title' => array('@cdata' => 'Stranger in a Strange Land'),
+                    'price' => array(
+                        '@attributes' => array(
+                            'discount' => '10%'
+                        ),
+                        '@value' => '$18.00'
+                    )
                 )
             )
-        )
-    );
+        );
+    }
 
     /**
      * Tests the main flow of xml2array functionality.
      */
     public function testXML2Array()
     {
-        $xmlService = new EasyXMLService();
         $xmlFile = __DIR__ . '/../../data/test.xml';
-        $content = $xmlService->xml2array($xmlFile);
+        $content = $this->_service->xml2array($xmlFile);
 
         $this->assertEquals(
             'fiction',
@@ -95,56 +110,44 @@ class EasyXMLServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests the exception flow of xml2array functionality.
+     * @expectedException EasyXML\Exception\EasyXMLException
+     * @expectedExceptionMessage [EasyXML] Error Processing Request: Invalid XML document given.
+     */
+    public function testXML2ArrayException()
+    {
+        $xmlFile = '';
+        $this->_service->xml2array($xmlFile);
+    }
+
+    /**
      * Tests the main flow of array2xml functionality.
      */
     public function testArray2XML()
     {
-        $xmlService = new EasyXMLService();
-        $content    = $xmlService->array2xml($this->_rootNode, $this->_body);
-        $dom        = new DomDocument();
+        $content = $this->_service->array2xml($this->_rootNode, $this->_body);
+        $dom = new \DomDocument();
+
         $this->assertTrue($dom->loadXML($content));
     }
 
     /**
-     * Tests the exception flow of xml2array functionality.
+     * Tests the exception flow of array2xml functionality.
+     * @expectedException EasyXML\Exception\EasyXMLException
+     * @expectedExceptionMessage [EasyXML] Error Processing Request: Invalid first argument($rootNode).
      */
-    public function testXML2ArrayException()
+    public function testArray2XMLExceptionOne()
     {
-        try {
-            $xmlService = new EasyXMLService();
-            $xmlFile = ' ';
-            $xmlService->xml2array($xmlFile);
-        } catch (EasyXMLException $e) {
-            $this->assertEquals(
-                '[EasyXML] Error Processing Request: Invalid XML document given.',
-                $e->getMessage()
-            );
-        }
+        $this->_service->array2xml(null, $this->_body);
     }
 
     /**
      * Tests the exception flow of array2xml functionality.
+     * @expectedException EasyXML\Exception\EasyXMLException
+     * @expectedExceptionMessage [EasyXML] Error Processing Request: Invalid second argument($body).
      */
-    public function testArray2XMLException()
+    public function testArray2XMLExceptionTwo()
     {
-        $xmlService = new EasyXMLService();
-
-        try {
-            $xmlService->array2xml(null, $this->_body);
-        } catch (EasyXMLException $e) {
-            $this->assertEquals(
-                '[EasyXML] Error Processing Request: Invalid first argument($rootNode).',
-                $e->getMessage()
-            );
-        }
-
-        try {
-            $xmlService->array2xml($this->_rootNode, null);
-        } catch (EasyXMLException $e) {
-            $this->assertEquals(
-                '[EasyXML] Error Processing Request: Invalid second argument($body).',
-                $e->getMessage()
-            );
-        }
+        $this->_service->array2xml($this->_rootNode, null);
     }
 }

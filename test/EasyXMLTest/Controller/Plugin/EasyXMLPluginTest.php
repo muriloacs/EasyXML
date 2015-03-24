@@ -10,8 +10,6 @@
 
 namespace EasyXML\Controller\Plugin;
 
-use PHPUnit_Framework_TestCase;
-use DomDocument;
 use EasyXML\Controller\Plugin\EasyXMLPlugin;
 use EasyXML\Service\EasyXMLService;
 
@@ -20,67 +18,76 @@ use EasyXML\Service\EasyXMLService;
  *
  * @since Class available since Release 1.0
  */
-class EasyXMLPluginTest extends PHPUnit_Framework_TestCase
+class EasyXMLPluginTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var EasyXMLPlugin
+     */
+    private $_plugin;
+
     /**
      * @var string
      */
-    private $_rootNode = 'products';
+    private $_rootNode;
 
     /**
      * @var array
      */
-    private $_body = array(
-        '@attributes' => array(
-            'type' => 'fiction'
-        ),
-        'book' => array(
-            array(
-                '@attributes' => array(
-                    'author' => 'George Orwell'
-                ),
-                'title' => '1984'
+    private $_body;
+
+    /**
+     * @var array
+     */
+    private $_header;
+
+    /**
+     * Setup method.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->_plugin = new EasyXMLPlugin(new EasyXMLService());
+
+        $this->_rootNode = 'products';
+
+        $this->_body = array(
+            '@attributes' => array(
+                'type' => 'fiction'
             ),
-            array(
-                '@attributes' => array(
-                    'author' => 'Isaac Asimov'
-                ),
-                'title' => array('@cdata' => 'Foundation'),
-                'price' => '$15.61'
-            ),
-            array(
-                '@attributes' => array(
-                    'author' => 'Robert A Heinlein'
-                ),
-                'title' => array('@cdata' => 'Stranger in a Strange Land'),
-                'price' => array(
+            'book' => array(
+                array(
                     '@attributes' => array(
-                        'discount' => '10%'
+                        'author' => 'George Orwell'
                     ),
-                    '@value' => '$18.00'
+                    'title' => '1984'
+                ),
+                array(
+                    '@attributes' => array(
+                        'author' => 'Isaac Asimov'
+                    ),
+                    'title' => array('@cdata' => 'Foundation'),
+                    'price' => '$15.61'
+                ),
+                array(
+                    '@attributes' => array(
+                        'author' => 'Robert A Heinlein'
+                    ),
+                    'title' => array('@cdata' => 'Stranger in a Strange Land'),
+                    'price' => array(
+                        '@attributes' => array(
+                            'discount' => '10%'
+                        ),
+                        '@value' => '$18.00'
+                    )
                 )
             )
-        )
-    );
+        );
 
-    /**
-     * @var array
-     */
-    private $_header = array(
-        'version'  => '1.0',
-        'encoding' => 'utf-8'
-    );
-
-    /**
-     * Tests the main flow of array2xml functionality.
-     */
-    public function testArray2XML()
-    {
-        $plugin  = new EasyXMLPlugin(new EasyXMLService());
-        $content = $plugin->array2xml($this->_rootNode, $this->_body, $this->_header);
-        $dom     = new DomDocument();
-
-        $this->assertTrue($dom->loadXML($content));
+        $this->_header = array(
+            'version'  => '1.0',
+            'encoding' => 'utf-8'
+        );
     }
 
     /**
@@ -88,9 +95,8 @@ class EasyXMLPluginTest extends PHPUnit_Framework_TestCase
      */
     public function testXML2Array()
     {
-        $plugin  = new EasyXMLPlugin(new EasyXMLService());
         $xmlFile = __DIR__ . '/../../../data/test.xml';
-        $content = $plugin->xml2array($xmlFile);
+        $content = $this->_plugin->xml2array($xmlFile);
 
         $this->assertEquals(
             'fiction',
@@ -112,6 +118,16 @@ class EasyXMLPluginTest extends PHPUnit_Framework_TestCase
             'Robert A Heinlein',
             $content['products']['book'][2]['@attributes']['author']
         );
+    }
 
+    /**
+     * Tests the main flow of array2xml functionality.
+     */
+    public function testArray2XML()
+    {
+        $content = $this->_plugin->array2xml($this->_rootNode, $this->_body, $this->_header);
+        $dom = new \DomDocument();
+
+        $this->assertTrue($dom->loadXML($content));
     }
 }
