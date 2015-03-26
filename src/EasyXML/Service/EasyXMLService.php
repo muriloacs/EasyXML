@@ -44,10 +44,13 @@ class EasyXMLService
         $version = isset($header['version']) && !empty($header['version']) ? $header['version'] : '1.0';
         $encoding = isset($header['encoding']) && !empty($header['encoding']) ? $header['encoding'] : 'UTF-8';
 
-        Array2XML::init($version, $encoding);
-        $xml = Array2XML::createXML($rootNode, $body);
-
-        return $xml->saveXML();
+        try {
+            Array2XML::init($version, $encoding);
+            $xml = Array2XML::createXML($rootNode, $body);
+            return $xml->saveXML();
+        } catch (\Exception $e) {
+            throw new EasyXMLException("Internal error - {$e->getMessage()}");
+        }
     }
 
     /**
@@ -60,15 +63,16 @@ class EasyXMLService
     {
         $xml = trim($xml);
         if (!$xml) {
-            throw new EasyXMLException('Invalid XML document given.');
+            throw new EasyXMLException('You should provide a XML document.');
         }
 
-        $xml = is_file($xml) ? file_get_contents($xml) : $xml;
-        $dom = new DomDocument();
-        if (!$dom->loadXML($xml)) {
+        try {
+            $xml = is_file($xml) ? file_get_contents($xml) : $xml;
+            $dom = new DomDocument();
+            $dom->loadXML($xml);
+            return XML2Array::createArray($dom);
+        } catch (\Exception $e) {
             throw new EasyXMLException('Invalid XML document given.');
         }
-
-        return XML2Array::createArray($dom);
     }
 }

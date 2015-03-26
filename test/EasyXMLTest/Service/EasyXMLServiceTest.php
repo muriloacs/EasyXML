@@ -112,11 +112,22 @@ class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests the exception flow of xml2array functionality.
      * @expectedException EasyXML\Exception\EasyXMLException
-     * @expectedExceptionMessage [EasyXML] Error Processing Request: Invalid XML document given.
+     * @expectedExceptionMessage [EasyXML] Error Processing Request: You should provide a XML document.
      */
-    public function testXML2ArrayException()
+    public function testXML2ArrayExceptionOne()
     {
         $xmlFile = '';
+        $this->service->xml2array($xmlFile);
+    }
+
+    /**
+     * Tests the exception flow of xml2array functionality.
+     * @expectedException EasyXML\Exception\EasyXMLException
+     * @expectedExceptionMessage [EasyXML] Error Processing Request: Invalid XML document given.
+     */
+    public function testXML2ArrayExceptionTwo()
+    {
+        $xmlFile = __DIR__ . '../../data/this-file-does-not-exist.xml';
         $this->service->xml2array($xmlFile);
     }
 
