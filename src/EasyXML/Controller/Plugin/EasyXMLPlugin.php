@@ -23,7 +23,7 @@ class EasyXMLPlugin extends AbstractPlugin
     /**
      * @var EasyXMLService
      */
-    private $_easyXMLService;
+    private $service;
 
     /**
      * EasyXMLService injected as a dependency.
@@ -31,7 +31,7 @@ class EasyXMLPlugin extends AbstractPlugin
      */
     public function __construct(EasyXMLService $easyXMLService)
     {
-        $this->_easyXMLService = $easyXMLService;
+        $this->service = $easyXMLService;
     }
 
     /**
@@ -43,7 +43,7 @@ class EasyXMLPlugin extends AbstractPlugin
      */
     public function array2xml($rootNode, $body, $header = null)
     {
-        return $this->_easyXMLService->array2xml($rootNode, $body, $header);
+        return $this->service->array2xml($rootNode, $body, $header);
     }
 
     /**
@@ -53,6 +53,6 @@ class EasyXMLPlugin extends AbstractPlugin
      */
     public function xml2array($xml)
     {
-        return $this->_easyXMLService->xml2array($xml);
+        return $this->service->xml2array($xml);
     }
 }

@@ -22,17 +22,17 @@ class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EasyXMLService
      */
-    private $_service;
+    private $service;
 
     /**
      * @var string
      */
-    private $_rootNode;
+    private $rootNode;
 
     /**
      * @var array
      */
-    private $_body;
+    private $body;
 
     /**
      * Setup method.
@@ -41,11 +41,11 @@ class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->_service = new EasyXMLService();
+        $this->service = new EasyXMLService();
 
-        $this->_rootNode = 'products';
+        $this->rootNode = 'products';
         
-        $this->_body = array(
+        $this->body = array(
             '@attributes' => array(
                 'type' => 'fiction'
             ),
@@ -85,7 +85,7 @@ class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
     public function testXML2Array()
     {
         $xmlFile = __DIR__ . '/../../data/test.xml';
-        $content = $this->_service->xml2array($xmlFile);
+        $content = $this->service->xml2array($xmlFile);
 
         $this->assertEquals(
             'fiction',
@@ -117,7 +117,7 @@ class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
     public function testXML2ArrayException()
     {
         $xmlFile = '';
-        $this->_service->xml2array($xmlFile);
+        $this->service->xml2array($xmlFile);
     }
 
     /**
@@ -125,7 +125,7 @@ class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testArray2XML()
     {
-        $content = $this->_service->array2xml($this->_rootNode, $this->_body);
+        $content = $this->service->array2xml($this->rootNode, $this->body);
         $dom = new \DomDocument();
 
         $this->assertTrue($dom->loadXML($content));
@@ -138,7 +138,7 @@ class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testArray2XMLExceptionOne()
     {
-        $this->_service->array2xml(null, $this->_body);
+        $this->service->array2xml(null, $this->body);
     }
 
     /**
@@ -148,6 +148,6 @@ class EasyXMLServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testArray2XMLExceptionTwo()
     {
-        $this->_service->array2xml($this->_rootNode, null);
+        $this->service->array2xml($this->rootNode, null);
     }
 }

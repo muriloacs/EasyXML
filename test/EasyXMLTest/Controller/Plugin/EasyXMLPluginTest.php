@@ -23,22 +23,22 @@ class EasyXMLPluginTest extends \PHPUnit_Framework_TestCase
     /**
      * @var EasyXMLPlugin
      */
-    private $_plugin;
+    private $plugin;
 
     /**
      * @var string
      */
-    private $_rootNode;
+    private $rootNode;
 
     /**
      * @var array
      */
-    private $_body;
+    private $body;
 
     /**
      * @var array
      */
-    private $_header;
+    private $header;
 
     /**
      * Setup method.
@@ -47,11 +47,11 @@ class EasyXMLPluginTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->_plugin = new EasyXMLPlugin(new EasyXMLService());
+        $this->plugin = new EasyXMLPlugin(new EasyXMLService());
 
-        $this->_rootNode = 'products';
+        $this->rootNode = 'products';
 
-        $this->_body = array(
+        $this->body = array(
             '@attributes' => array(
                 'type' => 'fiction'
             ),
@@ -84,7 +84,7 @@ class EasyXMLPluginTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $this->_header = array(
+        $this->header = array(
             'version'  => '1.0',
             'encoding' => 'utf-8'
         );
@@ -96,7 +96,7 @@ class EasyXMLPluginTest extends \PHPUnit_Framework_TestCase
     public function testXML2Array()
     {
         $xmlFile = __DIR__ . '/../../../data/test.xml';
-        $content = $this->_plugin->xml2array($xmlFile);
+        $content = $this->plugin->xml2array($xmlFile);
 
         $this->assertEquals(
             'fiction',
@@ -125,7 +125,7 @@ class EasyXMLPluginTest extends \PHPUnit_Framework_TestCase
      */
     public function testArray2XML()
     {
-        $content = $this->_plugin->array2xml($this->_rootNode, $this->_body, $this->_header);
+        $content = $this->plugin->array2xml($this->rootNode, $this->body, $this->header);
         $dom = new \DomDocument();
 
         $this->assertTrue($dom->loadXML($content));

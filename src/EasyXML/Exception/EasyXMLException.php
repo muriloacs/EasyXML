@@ -19,7 +19,7 @@ use Exception;
  */
 class EasyXMLException extends Exception
 {
-    private $_errorMessage = '[EasyXML] Error Processing Request: ';
+    private $errorMessage = '[EasyXML] Error Processing Request: ';
 
     /**
      * Redefine the exception so message isn't optional.
@@ -29,6 +29,6 @@ class EasyXMLException extends Exception
      */
     public function __construct($message, $code = 0, Exception $previous = null)
     {
-        parent::__construct($this->_errorMessage . $message, $code, $previous);
+        parent::__construct($this->errorMessage . $message, $code, $previous);
     }
 } 
